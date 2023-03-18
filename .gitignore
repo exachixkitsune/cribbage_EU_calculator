@@ -1,0 +1,14 @@
+/venv
+
+# Caching directories
+/.local/
+/.cache/
+__pycache__/
+.mypy_cache/
+
+# Coverage and Test artefacts
+.coverage
+/.coverage_html/
+/.pytest_cache/
+/junit.xml
+/reports
