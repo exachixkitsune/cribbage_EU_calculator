@@ -30,7 +30,9 @@ class CardVal(IntEnum):
     VAL_K = 13
 
     def __str__(self) -> str:
-        print("__STR__")
+        """
+        String output;
+        """
         return self.name[-1:]
 
 
@@ -54,6 +56,13 @@ class CardSuit(str, Enum):
     SPADE = "Spade"
     DIAMOND = "Diamond"
     HEART = "Heart"
+
+    def __str__(self) -> str:
+        """
+        String output
+        By default, first character only
+        """
+        return self.name[0]
 
 
 suits_symbols = {
