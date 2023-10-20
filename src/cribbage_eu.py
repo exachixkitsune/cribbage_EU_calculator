@@ -166,9 +166,9 @@ def calculate_cribbage_eu(
             yield result.result()
 
 
-def calculate_score_for_option(hand: set[Card], discord: set[Card]) -> DiscardOption:
+def calculate_score_for_option(hand: set[Card], discard: set[Card]) -> DiscardOption:
     # What cards remain in hand
-    i_discard = discord
+    i_discard = discard
     i_hand = hand
 
     # Calculate potential scores from hand
