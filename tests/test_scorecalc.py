@@ -12,7 +12,7 @@ from scorecalc import (
     calculate_score_5_nobs,
 )
 from card import Card
-from cardenums import str_to_cardval
+from cardenums import CardVal
 
 # pragma pylint: disable=R0903
 #  Disable "too few public methods" for test cases - most test files will be classes used for
@@ -31,7 +31,7 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card("JH"), Card("3C"), Card("KS"), Card("7D")], Card("9C")
+                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("KS"), Card.from_str("7D")], Card.from_str("9C")
             )
             == 0
         )
@@ -44,7 +44,7 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card("JS"), Card("5H"), Card("XC"), Card("5S")], Card("4S")
+                [Card.from_str("JS"), Card.from_str("5H"), Card.from_str("XC"), Card.from_str("5S")], Card.from_str("4S")
             )
             == 11
         )
@@ -57,7 +57,7 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card("5D"), Card("6S"), Card("5C"), Card("7C")], Card("4S")
+                [Card.from_str("5D"), Card.from_str("6S"), Card.from_str("5C"), Card.from_str("7C")], Card.from_str("4S")
             )
             == 14
         )
@@ -70,7 +70,7 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card("AH"), Card("KS"), Card("2S"), Card("6H")], Card("4S")
+                [Card.from_str("AH"), Card.from_str("KS"), Card.from_str("2S"), Card.from_str("6H")], Card.from_str("4S")
             )
             == 2
         )
@@ -89,11 +89,11 @@ class TestScore1:
         assert (
             calculate_score_1_15s(
                 [
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
-                    str_to_cardval("J"),
-                    str_to_cardval("J"),
-                    str_to_cardval("Q"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("Q"),
                 ]
             )
             == 0
@@ -107,11 +107,11 @@ class TestScore1:
         assert (
             calculate_score_1_15s(
                 [
-                    str_to_cardval("6"),
-                    str_to_cardval("7"),
-                    str_to_cardval("8"),
-                    str_to_cardval("X"),
-                    str_to_cardval("Q"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("7"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("Q"),
                 ]
             )
             == 2
@@ -125,11 +125,11 @@ class TestScore1:
         assert (
             calculate_score_1_15s(
                 [
-                    str_to_cardval("6"),
-                    str_to_cardval("7"),
-                    str_to_cardval("8"),
-                    str_to_cardval("9"),
-                    str_to_cardval("Q"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("7"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("Q"),
                 ]
             )
             == 4
@@ -143,11 +143,11 @@ class TestScore1:
         assert (
             calculate_score_1_15s(
                 [
-                    str_to_cardval("5"),
-                    str_to_cardval("5"),
-                    str_to_cardval("5"),
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 14
@@ -161,11 +161,11 @@ class TestScore1:
         assert (
             calculate_score_1_15s(
                 [
-                    str_to_cardval("5"),
-                    str_to_cardval("Q"),
-                    str_to_cardval("K"),
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("Q"),
+                    CardVal.from_str("K"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 8
@@ -185,11 +185,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("4"),
-                    str_to_cardval("6"),
-                    str_to_cardval("8"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 0
@@ -203,11 +203,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
-                    str_to_cardval("5"),
-                    str_to_cardval("6"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("6"),
                 ]
             )
             == 5
@@ -221,11 +221,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("A"),
-                    str_to_cardval("2"),
-                    str_to_cardval("3"),
-                    str_to_cardval("6"),
-                    str_to_cardval("7"),
+                    CardVal.from_str("A"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("7"),
                 ]
             )
             == 3
@@ -239,11 +239,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("X"),
-                    str_to_cardval("Q"),
-                    str_to_cardval("3"),
-                    str_to_cardval("J"),
-                    str_to_cardval("7"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("Q"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("7"),
                 ]
             )
             == 3
@@ -257,11 +257,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("3"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
-                    str_to_cardval("6"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("6"),
                 ]
             )
             == 6
@@ -275,11 +275,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("6"),
-                    str_to_cardval("2"),
-                    str_to_cardval("3"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
                 ]
             )
             == 6
@@ -293,11 +293,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
-                    str_to_cardval("5"),
-                    str_to_cardval("8"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("8"),
                 ]
             )
             == 4
@@ -311,11 +311,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("5"),
-                    str_to_cardval("2"),
-                    str_to_cardval("8"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
                 ]
             )
             == 4
@@ -330,11 +330,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("5"),
-                    str_to_cardval("2"),
-                    str_to_cardval("4"),
-                    str_to_cardval("3"),
-                    str_to_cardval("4"),
+                    CardVal.from_str("5"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("3"),
+                    CardVal.from_str("4"),
                 ]
             )
             == 8
@@ -349,11 +349,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
-                    str_to_cardval("J"),
-                    str_to_cardval("J"),
-                    str_to_cardval("Q"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("Q"),
                 ]
             )
             == 12
@@ -368,11 +368,11 @@ class TestScore2:
         assert (
             calculate_score_2_runs(
                 [
-                    str_to_cardval("9"),
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
-                    str_to_cardval("X"),
-                    str_to_cardval("J"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("J"),
                 ]
             )
             == 9
@@ -392,11 +392,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("4"),
-                    str_to_cardval("6"),
-                    str_to_cardval("8"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("4"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 0
@@ -410,11 +410,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("6"),
-                    str_to_cardval("8"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("8"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 0
@@ -428,11 +428,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("6"),
-                    str_to_cardval("J"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 0
@@ -446,11 +446,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("6"),
-                    str_to_cardval("9"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("6"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 2
@@ -464,11 +464,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("J"),
-                    str_to_cardval("Q"),
-                    str_to_cardval("9"),
-                    str_to_cardval("J"),
-                    str_to_cardval("K"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("Q"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("K"),
                 ]
             )
             == 2
@@ -482,11 +482,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("X"),
-                    str_to_cardval("9"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("X"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 4
@@ -500,11 +500,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("J"),
-                    str_to_cardval("Q"),
-                    str_to_cardval("9"),
-                    str_to_cardval("J"),
-                    str_to_cardval("Q"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("Q"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("Q"),
                 ]
             )
             == 4
@@ -518,11 +518,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("X"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("X"),
                 ]
             )
             == 6
@@ -536,11 +536,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("J"),
-                    str_to_cardval("9"),
-                    str_to_cardval("2"),
-                    str_to_cardval("J"),
-                    str_to_cardval("J"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("J"),
+                    CardVal.from_str("J"),
                 ]
             )
             == 6
@@ -554,11 +554,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("2"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("2"),
                 ]
             )
             == 8
@@ -572,11 +572,11 @@ class TestScore3:
         assert (
             calculate_score_3_pairs(
                 [
-                    str_to_cardval("2"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
-                    str_to_cardval("9"),
+                    CardVal.from_str("2"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
+                    CardVal.from_str("9"),
                 ]
             )
             == 12
@@ -595,7 +595,7 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card("AH"), Card("3C"), Card("5S"), Card("7D")], Card("9C")
+                [Card.from_str("AH"), Card.from_str("3C"), Card.from_str("5S"), Card.from_str("7D")], Card.from_str("9C")
             )
             == 0
         )
@@ -607,7 +607,7 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card("5H"), Card("8D"), Card("9D"), Card("XD")], Card("2H")
+                [Card.from_str("5H"), Card.from_str("8D"), Card.from_str("9D"), Card.from_str("XD")], Card.from_str("2H")
             )
             == 0
         )
@@ -619,7 +619,7 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card("AH"), Card("3H"), Card("5H"), Card("7H")], Card("9C")
+                [Card.from_str("AH"), Card.from_str("3H"), Card.from_str("5H"), Card.from_str("7H")], Card.from_str("9C")
             )
             == 4
         )
@@ -631,7 +631,7 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card("AH"), Card("3H"), Card("5H"), Card("7H")], Card("9H")
+                [Card.from_str("AH"), Card.from_str("3H"), Card.from_str("5H"), Card.from_str("7H")], Card.from_str("9H")
             )
             == 5
         )
@@ -643,7 +643,7 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card("5D"), Card("8D"), Card("9D"), Card("XD")], Card("2H")
+                [Card.from_str("5D"), Card.from_str("8D"), Card.from_str("9D"), Card.from_str("XD")], Card.from_str("2H")
             )
             == 4
         )
@@ -661,7 +661,7 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card("AH"), Card("3C"), Card("5S"), Card("7D")], Card("9C")
+                [Card.from_str("AH"), Card.from_str("3C"), Card.from_str("5S"), Card.from_str("7D")], Card.from_str("9C")
             )
             == 0
         )
@@ -673,7 +673,7 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card("JH"), Card("3C"), Card("JS"), Card("7D")], Card("9C")
+                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("7D")], Card.from_str("9C")
             )
             == 0
         )
@@ -685,7 +685,7 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card("JH"), Card("5C"), Card("JC"), Card("JD")], Card("3S")
+                [Card.from_str("JH"), Card.from_str("5C"), Card.from_str("JC"), Card.from_str("JD")], Card.from_str("3S")
             )
             == 0
         )
@@ -697,7 +697,7 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card("JH"), Card("3C"), Card("JS"), Card("JD")], Card("3D")
+                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("JD")], Card.from_str("3D")
             )
             == 1
         )
@@ -709,7 +709,7 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card("JH"), Card("3C"), Card("JS"), Card("JD")], Card("3H")
+                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("JD")], Card.from_str("3H")
             )
             == 1
         )

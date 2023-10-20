@@ -3,8 +3,6 @@
 Created on Fri Mar 17 17:41:40 2023
 """
 
-from typing import List
-
 from card import (
     Card,
     convert_card_array_to_enum_array,
@@ -27,22 +25,11 @@ class TestCard:
     """
 
     @staticmethod
-    def test_card_setup_blank() -> None:
-        """
-        Specifically test is the card is blank on initiation
-        """
-        test_card = Card()
-
-        #  Specifically not simplified here, as the values should be empty sets
-        assert test_card.val == []  # pragma pylint: disable=C1803
-        assert test_card.suit == []  # pragma pylint: disable=C1803
-
-    @staticmethod
     def test_card_setup_init_1() -> None:
         """
         Test card is made correctly
         """
-        test_card = Card("AC")
+        test_card = Card.from_str("AC")
         assert test_card.val == CardVal.VAL_A
         assert test_card.suit == CardSuit.CLUB
         # Fully test resolution.
@@ -57,7 +44,7 @@ class TestCard:
         """
         Test card is made correctly
         """
-        test_card = Card("6S")
+        test_card = Card.from_str("6S")
         assert test_card.val == CardVal.VAL_6
         assert test_card.suit == CardSuit.SPADE
         assert str(test_card) == "6S"
@@ -68,7 +55,7 @@ class TestCard:
         """
         Test card is made correctly
         """
-        test_card = Card("4D")
+        test_card = Card.from_str("4D")
         assert test_card.val == CardVal.VAL_4
         assert test_card.suit == CardSuit.DIAMOND
         assert str(test_card) == "4D"
@@ -79,7 +66,7 @@ class TestCard:
         """
         Test card is made correctly
         """
-        test_card = Card("QH")
+        test_card = Card.from_str("QH")
         assert test_card.val == CardVal.VAL_Q
         assert test_card.suit == CardSuit.HEART
         assert str(test_card) == "QH"
@@ -90,8 +77,7 @@ class TestCard:
         """
         Test card is made correctly, using the direct function rather than the constructor
         """
-        test_card = Card("QH")
-        test_card.set_viapair(CardVal.VAL_J, CardSuit.DIAMOND)
+        test_card = Card(CardVal.VAL_J, CardSuit.DIAMOND)
         assert test_card.val == CardVal.VAL_J
         assert test_card.suit == CardSuit.DIAMOND
         assert str(test_card) == "JD"
@@ -103,7 +89,7 @@ class TestCard:
         Test equivilency works
         Test that type mismatch is fine
         """
-        test_card_1 = Card("QH")
+        test_card_1 = Card.from_str("QH")
         assert (test_card_1 == 5) is False
 
     @staticmethod
@@ -112,8 +98,8 @@ class TestCard:
         Test equivilency works
         Actual equivilency
         """
-        test_card_1 = Card("QH")
-        test_card_2 = Card("QH")
+        test_card_1 = Card.from_str("QH")
+        test_card_2 = Card.from_str("QH")
         assert (test_card_1 == test_card_2) is True
         assert (test_card_1 != test_card_2) is False
 
@@ -123,8 +109,8 @@ class TestCard:
         Test equivilency works
         Actual equivilency
         """
-        test_card_1 = Card("QH")
-        test_card_2 = Card("KH")
+        test_card_1 = Card.from_str("QH")
+        test_card_2 = Card.from_str("KH")
         assert (test_card_1 == test_card_2) is False
         assert (test_card_1 != test_card_2) is True
 
@@ -134,8 +120,8 @@ class TestCard:
         Test equivilency works
         Actual equivilency
         """
-        test_card_1 = Card("QH")
-        test_card_2 = Card("QS")
+        test_card_1 = Card.from_str("QH")
+        test_card_2 = Card.from_str("QS")
         assert (test_card_1 == test_card_2) is False
         assert (test_card_1 != test_card_2) is True
 
@@ -150,7 +136,7 @@ class TestCardToArray:
         """
         Empty array testing
         """
-        test_card_array: List[Card] = []
+        test_card_array: set[Card] = set()
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
@@ -164,7 +150,7 @@ class TestCardToArray:
         """
         Normal array of 4
         """
-        test_card_array = [Card("4D"), Card("6D"), Card("8S"), Card("XH")]
+        test_card_array = {Card.from_str("4D"), Card.from_str("6D"), Card.from_str("8S"), Card.from_str("XH")}
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
@@ -177,8 +163,8 @@ class TestCardToArray:
         assert test_card_suits == [
             CardSuit.DIAMOND,
             CardSuit.DIAMOND,
-            CardSuit.SPADE,
             CardSuit.HEART,
+            CardSuit.SPADE,
         ]
 
     @staticmethod
@@ -186,7 +172,7 @@ class TestCardToArray:
         """
         Normal array of 5
         """
-        test_card_array = [Card("2C"), Card("5S"), Card("5D"), Card("JH"), Card("KS")]
+        test_card_array = {Card.from_str("2C"), Card.from_str("5D"), Card.from_str("5S"), Card.from_str("JH"), Card.from_str("KS")}
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
@@ -199,9 +185,9 @@ class TestCardToArray:
         ]
         assert test_card_suits == [
             CardSuit.CLUB,
-            CardSuit.SPADE,
             CardSuit.DIAMOND,
             CardSuit.HEART,
+            CardSuit.SPADE,
             CardSuit.SPADE,
         ]
 
@@ -216,14 +202,14 @@ class TestCardListToString:
         """
         Test that empty in gives empty out
         """
-        assert convert_cardlist_to_str([]) == []  # pragma pylint: disable=C1803
+        assert convert_cardlist_to_str(set()) == ""  # pragma pylint: disable=C1803
 
     @staticmethod
     def test_cardlist_to_str_test1() -> None:
         """
         basic test - 1 item
         """
-        assert convert_cardlist_to_str([Card("2C")]) == ["2C"]
+        assert convert_cardlist_to_str({Card.from_str("2C")}) == "2C"
 
     @staticmethod
     def test_cardlist_to_str_test5() -> None:
@@ -231,17 +217,18 @@ class TestCardListToString:
         basic test - many items
         """
         assert convert_cardlist_to_str(
-            [Card("2C"), Card("5S"), Card("5D"), Card("JH")]
-        ) == ["2C", "5S", "5D", "JH"]
+            {Card.from_str("2C"), Card.from_str("5S"), Card.from_str("5D"), Card.from_str("JH")}
+        ) == "2C, 5D, 5S, JH"
 
     @staticmethod
     def test_cardlist_to_str_test5_symbols() -> None:
         """
         basic test - many items
         """
-        assert convert_cardlist_to_str(
-            [Card("2C"), Card("5S"), Card("5D"), Card("JH")], True
-        ) == ["2♣", "5♠", "5♦", "J♥"]
+        cards = {Card.from_str("2C"), Card.from_str("5S"), Card.from_str("JH"), Card.from_str("5D")}
+        print(sorted(cards))
+
+        assert convert_cardlist_to_str(cards, True) == "2♣, 5♦, 5♠, J♥"
 
 
 class TestAllPossibleCards:
