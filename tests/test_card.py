@@ -163,8 +163,8 @@ class TestCardToArray:
         assert test_card_suits == [
             CardSuit.DIAMOND,
             CardSuit.DIAMOND,
-            CardSuit.SPADE,
             CardSuit.HEART,
+            CardSuit.SPADE,
         ]
 
     @staticmethod
@@ -176,7 +176,7 @@ class TestCardToArray:
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
-        assert sorted(test_card_vals) == [
+        assert test_card_vals == [
             CardVal.VAL_2,
             CardVal.VAL_5,
             CardVal.VAL_5,
@@ -186,8 +186,8 @@ class TestCardToArray:
         assert test_card_suits == [
             CardSuit.CLUB,
             CardSuit.DIAMOND,
-            CardSuit.SPADE,
             CardSuit.HEART,
+            CardSuit.SPADE,
             CardSuit.SPADE,
         ]
 

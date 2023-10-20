@@ -5,7 +5,7 @@ Created on Fri Mar 17 16:20:35 2023
 
 from __future__ import annotations
 
-from copy import copy
+import itertools
 from collections.abc import Iterable
 from itertools import combinations
 
@@ -60,27 +60,16 @@ def calculate_score_1_15s(full_set_vals: list[CardVal]) -> int:
     full_set_points = [min(int(x), 10) for x in full_set_vals]
 
     # Evaluate each combination
-    set_lists = [
-        *[list(i) for i in combinations(full_set_points, 2)],
-        *[list(i) for i in combinations(full_set_points, 3)],
-        *[list(i) for i in combinations(full_set_points, 4)],
-        full_set_points,
-    ]
-
-    # list of points: list(map(check_15_score, set_lists))
-    # So to give total points:
-    return sum(list(map(check_15_score, set_lists)))
-
-
-def check_15_score(set_points: list[int]) -> int:
-    """
-    Checking: do the contents of set_points add up to 15 exactly.
-    """
-    score = sum(set_points)
-    if score == 15:
-        return 2
-
-    return 0
+    return sum(
+        2 * (sum(potential_set) == 15)
+        for potential_set
+        in itertools.chain(
+            combinations(full_set_points, 2),
+            combinations(full_set_points, 3),
+            combinations(full_set_points, 4),
+            [full_set_points],
+        )
+    )
 
 
 def calculate_score_2_runs(full_set_vals: list[CardVal]) -> int:
@@ -90,52 +79,31 @@ def calculate_score_2_runs(full_set_vals: list[CardVal]) -> int:
     the danger here is double-counting a run of 3 which is part of a run of 4, and so on.
     """
 
+    # Ensure the values are sorted, otherwise combinations may not give correctly ordered combos.
+    full_set_vals = sorted(full_set_vals)
+
     # First, check if all 5 items are a run
     #   If this is the case, no other set can be scored (as any set of 4 will be part of this)
     if is_a_run(full_set_vals):
         return 5
 
     # Second, check if any combination of 4 is a run
-    valid_runs = []
-    combination_indicies = list(combinations(range(5), 4))
-    for i_combination_set in combination_indicies:
-        if is_a_run([full_set_vals[i] for i in i_combination_set]):
-            valid_runs.append(copy(i_combination_set))
+    valid_runs = sum(len(cards) for cards in combinations(full_set_vals, 4) if is_a_run(cards))
 
-    # Third, check is any combination of 3 is a run
-    # but if the combination is in the combination, reject
-    valid_runs_2 = []
-    combination_indicies_2 = list(combinations(range(5), 3))
-    for i_combination_set_2 in combination_indicies_2:
-        if any(is_a_subset_b(i_combination_set_2, j) for j in valid_runs):
-            continue
-        if is_a_run(full_set_vals[i] for i in i_combination_set_2):
-            valid_runs_2.append(copy(i_combination_set_2))
+    if valid_runs:
+        return valid_runs
 
-    # Score
-    return sum(len(i) for i in valid_runs) + sum(len(i) for i in valid_runs_2)
+    return sum(len(cards) for cards in combinations(full_set_vals, 3) if is_a_run(cards))
 
 
 def is_a_run(test: Iterable[CardVal]) -> bool:
     """
     Is this list of numbers a run
     """
-    this_test = list(test)
-    this_test.sort()
+    test_iter = test.__iter__()
+    lowest = test_iter.__next__() + 1
 
-    # Are all numbers sequential?
-    # delta:
-    delta = [this_test[i + 1] - this_test[i] for i in range(len(this_test) - 1)]
-
-    # if all sequential, delta is always 1
-    return all(i == 1 for i in delta)
-
-
-def is_a_subset_b(valuesa: tuple[int, ...], valuesb: tuple[int, ...]) -> bool:
-    """
-    Check if a is a subset of b
-    """
-    return set(valuesa) <= set(valuesb)
+    return all(lowest + idx == value for idx, value in enumerate(test_iter))
 
 
 def calculate_score_3_pairs(full_set_vals: list[CardVal]) -> int:
@@ -145,19 +113,7 @@ def calculate_score_3_pairs(full_set_vals: list[CardVal]) -> int:
     Each pair scores 2
     Simple combinatronics
     """
-
-    set_pairs = [list(i) for i in combinations(full_set_vals, 2)]
-
-    return sum(list(map(check_pair_and_score, set_pairs)))
-
-
-def check_pair_and_score(set_vals: list[CardVal]) -> int:
-    """
-    Is this a pair? If so, return 2 points
-    """
-    if set_vals[0] == set_vals[1]:
-        return 2
-    return 0
+    return sum(2 * (i[0] == i[1]) for i in combinations(full_set_vals, 2))
 
 
 def calculate_score_4_flush(hand: set[Card], starter: Card) -> int:
@@ -165,18 +121,14 @@ def calculate_score_4_flush(hand: set[Card], starter: Card) -> int:
     Check for a flush, and score as appropriate
     I.e. 4 for a flush in hand only, 5 for a flush including the starter
     """
-    _, hand_suits = convert_card_array_to_enum_array(hand)
 
     # Are all the hand suits the same?
-    all_hand_same = all(
-        hand_suits[0] == hand_suits[i + 1] for i in range(len(hand_suits) - 1)
-    )
-    if all_hand_same:
-        if hand_suits[0] == starter.suit:
-            return 5
-        return 4
+    all_hand_same = set(card.suit for card in hand)
 
-    return 0
+    if len(all_hand_same) != 1:
+        return 0
+
+    return 5 if all_hand_same.pop() == starter.suit else 4
 
 
 def calculate_score_5_nobs(hand: set[Card], starter: Card) -> int:

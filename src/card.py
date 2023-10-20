@@ -106,11 +106,11 @@ def convert_card_array_to_enum_array(
     """
     list_val = []
     list_suit = []
-    for i_card in sorted(cards):
+    for i_card in cards:
         list_val.append(i_card.val)
         list_suit.append(i_card.suit)
 
-    return list_val, list_suit
+    return sorted(list_val), sorted(list_suit)
 
 
 def convert_cardlist_to_str(cardlist_in: set[Card], emoji: bool = False) -> str:
