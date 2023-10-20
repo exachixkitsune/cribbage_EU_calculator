@@ -4,15 +4,16 @@ Created on Fri Mar 17 16:20:35 2023
 """
 
 from __future__ import annotations
-from typing import List, Tuple, Iterable
-from copy import copy, deepcopy
+
+from copy import copy
+from collections.abc import Iterable
 from itertools import combinations
 
 from card import Card, convert_card_array_to_enum_array
 from cardenums import CardVal
 
 
-def calculate_score(hand: List[Card], starter: Card) -> int:
+def calculate_score(hand: set[Card], starter: Card) -> int:
     """
     Calculates the score of a hand of cards.
     https://en.wikipedia.org/wiki/Rules_of_cribbage#The_show
@@ -34,8 +35,8 @@ def calculate_score(hand: List[Card], starter: Card) -> int:
 
     # Generate set of all cards
     # Copy here to avoid ruining hand
-    full_set = deepcopy(hand)
-    full_set.append(starter)
+    full_set = set(hand)
+    full_set.add(starter)
 
     full_set_vals, _ = convert_card_array_to_enum_array(full_set)
 
@@ -46,11 +47,11 @@ def calculate_score(hand: List[Card], starter: Card) -> int:
         "flush": calculate_score_4_flush(hand, starter),
         "nobs": calculate_score_5_nobs(hand, starter),
     }
-    overall_score = sum(list(this_score.values()))
-    return overall_score
+
+    return sum(this_score.values())
 
 
-def calculate_score_1_15s(full_set_vals: List[CardVal]) -> int:
+def calculate_score_1_15s(full_set_vals: list[CardVal]) -> int:
     """
     Calculate 15s
     """
@@ -71,7 +72,7 @@ def calculate_score_1_15s(full_set_vals: List[CardVal]) -> int:
     return sum(list(map(check_15_score, set_lists)))
 
 
-def check_15_score(set_points: List[int]) -> int:
+def check_15_score(set_points: list[int]) -> int:
     """
     Checking: do the contents of set_points add up to 15 exactly.
     """
@@ -82,7 +83,7 @@ def check_15_score(set_points: List[int]) -> int:
     return 0
 
 
-def calculate_score_2_runs(full_set_vals: List[CardVal]) -> int:
+def calculate_score_2_runs(full_set_vals: list[CardVal]) -> int:
     """
     Look for Runs
     Basically, want to find every instance of runs within the set of values
@@ -130,14 +131,14 @@ def is_a_run(test: Iterable[CardVal]) -> bool:
     return all(i == 1 for i in delta)
 
 
-def is_a_subset_b(valuesa: Tuple[int, ...], valuesb: Tuple[int, ...]) -> bool:
+def is_a_subset_b(valuesa: tuple[int, ...], valuesb: tuple[int, ...]) -> bool:
     """
     Check if a is a subset of b
     """
     return set(valuesa) <= set(valuesb)
 
 
-def calculate_score_3_pairs(full_set_vals: List[CardVal]) -> int:
+def calculate_score_3_pairs(full_set_vals: list[CardVal]) -> int:
     """
     How many pairs are there in this set?
     Hopefully, trivial?
@@ -150,7 +151,7 @@ def calculate_score_3_pairs(full_set_vals: List[CardVal]) -> int:
     return sum(list(map(check_pair_and_score, set_pairs)))
 
 
-def check_pair_and_score(set_vals: List[CardVal]) -> int:
+def check_pair_and_score(set_vals: list[CardVal]) -> int:
     """
     Is this a pair? If so, return 2 points
     """
@@ -159,7 +160,7 @@ def check_pair_and_score(set_vals: List[CardVal]) -> int:
     return 0
 
 
-def calculate_score_4_flush(hand: List[Card], starter: Card) -> int:
+def calculate_score_4_flush(hand: set[Card], starter: Card) -> int:
     """
     Check for a flush, and score as appropriate
     I.e. 4 for a flush in hand only, 5 for a flush including the starter
@@ -168,7 +169,7 @@ def calculate_score_4_flush(hand: List[Card], starter: Card) -> int:
 
     # Are all the hand suits the same?
     all_hand_same = all(
-        [hand_suits[0] == hand_suits[i + 1] for i in range(len(hand_suits) - 1)]
+        hand_suits[0] == hand_suits[i + 1] for i in range(len(hand_suits) - 1)
     )
     if all_hand_same:
         if hand_suits[0] == starter.suit:
@@ -178,7 +179,7 @@ def calculate_score_4_flush(hand: List[Card], starter: Card) -> int:
     return 0
 
 
-def calculate_score_5_nobs(hand: List[Card], starter: Card) -> int:
+def calculate_score_5_nobs(hand: set[Card], starter: Card) -> int:
     """
     Check for "The Nobs"
     I.e. if a card in hand is a jack of the same suit as the starter card

@@ -6,9 +6,7 @@ import pytest
 
 from cardenums import (
     CardVal,
-    str_to_cardval,
     CardSuit,
-    str_to_cardsuit,
     cardsuit_to_symbol,
 )
 
@@ -63,51 +61,51 @@ class TestCardenums:
     @staticmethod
     def test_cardenums_cardval_setfromstring() -> None:
         """
-        Test setting via str_to_cardval works
+        Test setting via CardVal.from_str works
         """
-        assert str_to_cardval("A") == CardVal.VAL_A
-        assert str_to_cardval("2") == CardVal.VAL_2
-        assert str_to_cardval("3") == CardVal.VAL_3
-        assert str_to_cardval("4") == CardVal.VAL_4
-        assert str_to_cardval("5") == CardVal.VAL_5
-        assert str_to_cardval("6") == CardVal.VAL_6
-        assert str_to_cardval("7") == CardVal.VAL_7
-        assert str_to_cardval("8") == CardVal.VAL_8
-        assert str_to_cardval("9") == CardVal.VAL_9
-        assert str_to_cardval("X") == CardVal.VAL_X
-        assert str_to_cardval("J") == CardVal.VAL_J
-        assert str_to_cardval("Q") == CardVal.VAL_Q
-        assert str_to_cardval("K") == CardVal.VAL_K
+        assert CardVal.from_str("A") == CardVal.VAL_A
+        assert CardVal.from_str("2") == CardVal.VAL_2
+        assert CardVal.from_str("3") == CardVal.VAL_3
+        assert CardVal.from_str("4") == CardVal.VAL_4
+        assert CardVal.from_str("5") == CardVal.VAL_5
+        assert CardVal.from_str("6") == CardVal.VAL_6
+        assert CardVal.from_str("7") == CardVal.VAL_7
+        assert CardVal.from_str("8") == CardVal.VAL_8
+        assert CardVal.from_str("9") == CardVal.VAL_9
+        assert CardVal.from_str("X") == CardVal.VAL_X
+        assert CardVal.from_str("J") == CardVal.VAL_J
+        assert CardVal.from_str("Q") == CardVal.VAL_Q
+        assert CardVal.from_str("K") == CardVal.VAL_K
 
     @staticmethod
     def test_cardenums_cardsuit_setto_name() -> None:
         """
         Test making the CardSuit from the name
         """
-        assert str_to_cardsuit("Club") == CardSuit.CLUB
-        assert str_to_cardsuit("Spade") == CardSuit.SPADE
-        assert str_to_cardsuit("Diamond") == CardSuit.DIAMOND
-        assert str_to_cardsuit("Heart") == CardSuit.HEART
+        assert CardSuit.from_str("Club") == CardSuit.CLUB
+        assert CardSuit.from_str("Spade") == CardSuit.SPADE
+        assert CardSuit.from_str("Diamond") == CardSuit.DIAMOND
+        assert CardSuit.from_str("Heart") == CardSuit.HEART
 
     @staticmethod
     def test_cardenums_cardsuit_setto_short() -> None:
         """
         Test using a single value to make the name
         """
-        assert str_to_cardsuit("C") == CardSuit.CLUB
-        assert str_to_cardsuit("S") == CardSuit.SPADE
-        assert str_to_cardsuit("D") == CardSuit.DIAMOND
-        assert str_to_cardsuit("H") == CardSuit.HEART
+        assert CardSuit.from_str("C") == CardSuit.CLUB
+        assert CardSuit.from_str("S") == CardSuit.SPADE
+        assert CardSuit.from_str("D") == CardSuit.DIAMOND
+        assert CardSuit.from_str("H") == CardSuit.HEART
 
     @staticmethod
     def test_cardenums_cardsuit_setto_emoji() -> None:
         """
         Test using an Emoji to make the name
         """
-        assert str_to_cardsuit("♣") == CardSuit.CLUB
-        assert str_to_cardsuit("♠") == CardSuit.SPADE
-        assert str_to_cardsuit("♦") == CardSuit.DIAMOND
-        assert str_to_cardsuit("♥") == CardSuit.HEART
+        assert CardSuit.from_str("♣") == CardSuit.CLUB
+        assert CardSuit.from_str("♠") == CardSuit.SPADE
+        assert CardSuit.from_str("♦") == CardSuit.DIAMOND
+        assert CardSuit.from_str("♥") == CardSuit.HEART
 
     @staticmethod
     def test_cardenums_cardsuit_failure() -> None:
@@ -115,7 +113,7 @@ class TestCardenums:
         Test using an Emoji to make the name
         """
         with pytest.raises(KeyError):  # @UndefinedVariable
-            str_to_cardsuit("jeff")
+            CardSuit.from_str("jeff")
 
     @staticmethod
     def test_cardenums_cardsuit_return_emoji() -> None:

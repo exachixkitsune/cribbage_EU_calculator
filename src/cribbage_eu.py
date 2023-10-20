@@ -19,20 +19,16 @@ OP's hand's score is not dependant on your actions.
     Full list of potential values
 """
 
-from typing import List, Dict, Tuple, Callable
+from typing import Callable
 from itertools import combinations
 from time import time
-from statistics import mean, stdev, median
 
-from card import Card, convert_cardlist_to_str, all_possible_cards
+from card import Card, all_possible_cards, convert_cardlist_to_str
+from stats import DiscordOption, ScoringStats
 from scorecalc import calculate_score
 
 
-def present_results(
-    results_in: List[Dict],
-    num_make: int = 3,
-    emoji_mode: bool = False,
-) -> None:
+def present_results(results_in: list[DiscordOption], num_make: int = 3) -> None:
     """
     Describe the results
 
@@ -50,48 +46,51 @@ def present_results(
 
     # 1.
     print(f"Top {num_make} highest EU options (mean)")
-    provide_results(results_in, lambda x: x["hand_eu"]["mean"], num_make, emoji_mode)
+    provide_results(results_in, lambda x: x.hand_scores.mean, num_make)
+    print()
 
     # 2.
     print(f"Top {num_make} highest EU options (median)")
-    provide_results(results_in, lambda x: x["hand_eu"]["median"], num_make, emoji_mode)
+    provide_results(results_in, lambda x: x.hand_scores.median, num_make)
+    print()
 
     # 3.
     print(f"Top {num_make} highest min hand score")
-    provide_results(results_in, lambda x: x["hand_eu"]["min"], num_make, emoji_mode)
+    provide_results(results_in, lambda x: x.hand_scores.min, num_make)
+    print()
 
     # 4.
     print(f"Top {num_make} best overall EU (hand + crib)")
     provide_results(
         results_in,
-        lambda x: x["hand_eu"]["mean"] + x["crib_eu"]["mean"],
+        lambda x: x.hand_scores.mean + x.crib_scores.mean,
         num_make,
-        emoji_mode,
     )
+    print()
 
     # 5.
     print(f"Top {num_make} best overall EU (hand - crib)")
     provide_results(
         results_in,
-        lambda x: x["hand_eu"]["mean"] - x["crib_eu"]["mean"],
+        lambda x: x.hand_scores.mean - x.crib_scores.mean,
         num_make,
-        emoji_mode,
     )
+    print()
 
-    # 6
+    # 6.
     print(f"Top {num_make} LEAST crib EU")
-    provide_results(results_in, lambda x: -x["crib_eu"]["mean"], num_make, emoji_mode)
+    provide_results(results_in, lambda x: -x.crib_scores.mean, num_make)
+    print()
 
-    # 6
+    # 7.
     print(f"Top {num_make} MOST crib EU (mean)")
-    provide_results(results_in, lambda x: x["crib_eu"]["mean"], num_make, emoji_mode)
+    provide_results(results_in, lambda x: x.crib_scores.mean, num_make)
 
 
 def provide_results(
-    results_in: List[Dict],
-    keyfunc: Callable,
+    results_in: list[DiscordOption],
+    keyfunc: Callable[[DiscordOption], float],
     num_make: int = 3,
-    emoji_mode: bool = False,
 ) -> None:
     """
     Function taking the card list,
@@ -99,48 +98,39 @@ def provide_results(
     printing the top n rows
     and any rows matching the last value
     """
+
+    if num_make < 1:
+        return
+
     results_in.sort(reverse=True, key=keyfunc)
-    for i_row in range(num_make):
-        this_val = keyfunc(results_in[i_row])
-        print(
-            f"  {i_row:2.0f}:discard:"
-            + "{"
-            + ",".join(
-                convert_cardlist_to_str(results_in[i_row]["discard"], emoji_mode)
-            )
-            + "}"
-            + f": EU:{this_val:.2f}"
-            + " (keep: {"
-            + ",".join(convert_cardlist_to_str(results_in[i_row]["hand"], emoji_mode))
-            + "})"
-        )
 
-    last_val = keyfunc(results_in[i_row])
-    for i_row in range(num_make, len(results_in)):
-        if keyfunc(results_in[i_row]) != last_val:
+    # Get the value for the nth place,
+    # we will display all records that are at least this value.
+    final_val = keyfunc(results_in[num_make - 1])
+    last_val = -100.123
+
+    for i_row, result in enumerate(results_in):
+        score = keyfunc(results_in[i_row])
+
+        if score < final_val:
             break
-        this_val = keyfunc(results_in[i_row])
+
         print(
-            f"  {i_row:2.0f}:discard:"
-            + "{"
-            + ",".join(
-                convert_cardlist_to_str(results_in[i_row]["discard"], emoji_mode)
+            (
+                f"Discard {{{convert_cardlist_to_str(result.discard, True)}}}, "
+                f"keep {{{convert_cardlist_to_str(result.hand, True)}}}: {score:.2f}"
+                f"{'=' if score == last_val else ''}"
             )
-            + "}"
-            + f": EU:{this_val:.2f}"
-            + " (keep: {"
-            + ",".join(convert_cardlist_to_str(results_in[i_row]["hand"], emoji_mode))
-            + "})"
         )
 
+        last_val = score
 
-def calculate_cribbage_EU(
-    initial_hand: List[Card],
+
+def calculate_cribbage_eu(
+    initial_hand: set[Card],
     provide_status: bool = False,
-    update_interval: int = 1,
-    emoji_mode: bool = False,
     num_discard: int = 2,
-) -> List[Dict]:
+) -> list[DiscordOption]:
     """
     Calculate the EU for each option of discard to crib.
 
@@ -165,9 +155,7 @@ def calculate_cribbage_EU(
 
     # Generate each combination of potential cards to discard to crib
     # Use indicies, as this enables
-    discard_options_indicies_iterator = combinations(
-        range(len(initial_hand)), num_discard
-    )
+    discard_options_indicies_iterator = combinations(initial_hand, num_discard)
 
     hand_count = 0
 
@@ -175,84 +163,41 @@ def calculate_cribbage_EU(
 
     # Iterate over each option
     start_time = time()
-    for i_discard_option_indicies in discard_options_indicies_iterator:
+    for i_discard_tuple in discard_options_indicies_iterator:
         # What cards remain in hand
-        i_hand_cards_indicies = set(range(len(initial_hand))) - set(
-            i_discard_option_indicies
-        )
-
-        i_discard = [initial_hand[i] for i in i_discard_option_indicies]
-        i_hand = [initial_hand[i] for i in i_hand_cards_indicies]
+        i_discard = set(i_discard_tuple)
+        i_hand = initial_hand - i_discard
 
         if provide_status:
             hand_count += 1
-            discard_cards = (
-                "{" + ",".join(convert_cardlist_to_str(i_discard, emoji_mode)) + "}"
-            )
-            hand_cards = (
-                "{" + ",".join(convert_cardlist_to_str(i_hand, emoji_mode)) + "}"
-            )
-            curr_time = time() - start_time
             print(
                 (
-                    f"{curr_time:.0f}:On Hand {hand_count}, "
-                    f"with hand:{hand_cards}, discard:{discard_cards}"
+                    f"{time() - start_time:.0f}: On Hand {hand_count}, with "
+                    f"hand: {convert_cardlist_to_str(i_hand)}, "
+                    f"discard: {convert_cardlist_to_str(i_discard)}"
                 )
             )
 
         # Calculate potential scores from hand
         hand_scores = calculate_scores_from_hand(i_hand, i_discard)
-
-        crib_scores, _ = calculate_scores_from_crib(i_hand, i_discard)
+        crib_scores = calculate_scores_from_crib(i_hand, i_discard)
 
         # Calculate Stats
-        hand_eu = {
-            "raw": hand_scores,
-            "mean": mean(hand_scores),
-            "stdev": stdev(hand_scores),
-            "median": median(hand_scores),
-            "min": min(hand_scores),
-            "max": max(hand_scores),
-        }
-        crib_eu = {
-            "raw": crib_scores,
-            "mean": mean(crib_scores),
-            "stdev": stdev(crib_scores),
-            "median": median(crib_scores),
-            "min": min(crib_scores),
-            "max": max(crib_scores),
-        }
-        overall_results.append(
-            {
-                "hand": i_hand,
-                "discard": i_discard,
-                "hand_eu": hand_eu,
-                "crib_eu": crib_eu,
-            }
+        discard_stats = DiscordOption(
+            i_hand, i_discard, ScoringStats(hand_scores), ScoringStats(crib_scores)
         )
 
+        overall_results.append(discard_stats)
+
         if provide_status:
-            curr_time = time() - start_time
-            print(
-                (
-                    f"{curr_time:.0f}:  hand score: {hand_eu['mean']:.2f}±{hand_eu['stdev']:.2f}, "
-                    f"median:{hand_eu['median']}, range:{hand_eu['min']}-{hand_eu['max']}"
-                )
-            )
-            curr_time = time() - start_time
-            print(
-                (
-                    f"{curr_time:.0f}:  crib score: {crib_eu['mean']:.2f}±{crib_eu['stdev']:.2f}, "
-                    f"median:{crib_eu['median']}, range:{crib_eu['min']}-{crib_eu['max']}"
-                )
-            )
+            print(f"{time() - start_time:.1f}:  {discard_stats}")
 
     return overall_results
 
 
 def calculate_scores_from_hand(
-    hand_cards: List[Card], excluded_cards: List[Card]
-) -> List[int]:
+    hand_cards: set[Card], excluded_cards: set[Card]
+) -> list[int]:
     """
     Calculate the scores for the hand
 
@@ -265,7 +210,7 @@ def calculate_scores_from_hand(
         the loop. Otherwise, can just use the map.
     """
 
-    all_excluded_cards = hand_cards + excluded_cards
+    all_excluded_cards = hand_cards.union(excluded_cards)
 
     results_list = [
         calculate_score(hand_cards, starter_card)
@@ -277,8 +222,8 @@ def calculate_scores_from_hand(
 
 
 def calculate_scores_from_crib(
-    hand_cards: List[Card], discarded_cards: List[Card]
-) -> Tuple[List[int], list[list[object]]]:
+    hand_cards: set[Card], discarded_cards: set[Card]
+) -> list[int]:
     """
     Calculate the scores for the crib
 
@@ -289,7 +234,7 @@ def calculate_scores_from_crib(
     """
 
     # Possible cards in hand
-    all_excluded_cards = hand_cards + discarded_cards
+    all_excluded_cards = hand_cards.union(discarded_cards)
     possible_cards = [
         starter_card
         for starter_card in all_possible_cards()
@@ -302,27 +247,12 @@ def calculate_scores_from_crib(
     # Alternative is to extract one possible card, and then combination across the rest of the space
     # And that seems too complicated.
     results_list = []
-    detailed_list = []
-    for i_cards in combinations(possible_cards, 3):
-        for i_starter in range(len(i_cards)):
-            i_cribcards = list(set(range(3)) - {i_starter})
+    for i_cards_tuple in combinations(possible_cards, 3):
+        i_cards = set(i_cards_tuple)
+        for i_starter in i_cards:
             # Calculate score
             results_list.append(
-                calculate_score(
-                    discarded_cards
-                    + [i_cards[i_cribcards[0]], i_cards[i_cribcards[1]]],
-                    i_cards[i_starter],
-                )
-            )
-            detailed_list.append(
-                [
-                    [
-                        i_cards[i_starter],
-                        discarded_cards
-                        + [i_cards[i_cribcards[0]], i_cards[i_cribcards[1]]],
-                    ],
-                    results_list[-1],
-                ]
+                calculate_score(discarded_cards.union(i_cards) - {i_starter}, i_starter)
             )
 
-    return (results_list, detailed_list)
+    return results_list
