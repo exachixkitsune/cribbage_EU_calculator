@@ -19,7 +19,8 @@ OP's hand's score is not dependant on your actions.
     Full list of potential values
 """
 
-from typing import Callable
+import concurrent.futures
+from typing import Callable, Iterable
 from itertools import combinations
 from time import time
 
@@ -130,7 +131,7 @@ def calculate_cribbage_eu(
     initial_hand: set[Card],
     provide_status: bool = False,
     num_discard: int = 2,
-) -> list[DiscordOption]:
+) -> Iterable[DiscordOption]:
     """
     Calculate the EU for each option of discard to crib.
 
@@ -155,44 +156,33 @@ def calculate_cribbage_eu(
 
     # Generate each combination of potential cards to discard to crib
     # Use indicies, as this enables
-    discard_options_indicies_iterator = combinations(initial_hand, num_discard)
+    discards = [set(discard) for discard in combinations(initial_hand, num_discard)]
 
     hand_count = 0
 
-    overall_results = []
-
     # Iterate over each option
     start_time = time()
-    for i_discard_tuple in discard_options_indicies_iterator:
-        # What cards remain in hand
-        i_discard = set(i_discard_tuple)
-        i_hand = initial_hand - i_discard
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        futures = [executor.submit(calculate_score_for_option, initial_hand - discard, discard) for discard in discards]
+        for result in concurrent.futures.as_completed(futures):
+            yield result.result()
 
-        if provide_status:
-            hand_count += 1
-            print(
-                (
-                    f"{time() - start_time:.0f}: On Hand {hand_count}, with "
-                    f"hand: {convert_cardlist_to_str(i_hand)}, "
-                    f"discard: {convert_cardlist_to_str(i_discard)}"
-                )
-            )
 
-        # Calculate potential scores from hand
-        hand_scores = calculate_scores_from_hand(i_hand, i_discard)
-        crib_scores = calculate_scores_from_crib(i_hand, i_discard)
+def calculate_score_for_option(hand: set[Card], discord: set[Card]) -> DiscordOption:
+    # What cards remain in hand
+    i_discard = discord
+    i_hand = hand
 
-        # Calculate Stats
-        discard_stats = DiscordOption(
-            i_hand, i_discard, ScoringStats(hand_scores), ScoringStats(crib_scores)
-        )
+    # Calculate potential scores from hand
+    hand_scores = calculate_scores_from_hand(i_hand, i_discard)
+    crib_scores = calculate_scores_from_crib(i_hand, i_discard)
 
-        overall_results.append(discard_stats)
+    # Calculate Stats
+    discard_stats = DiscordOption(
+        i_hand, i_discard, ScoringStats(hand_scores), ScoringStats(crib_scores)
+    )
 
-        if provide_status:
-            print(f"{time() - start_time:.1f}:  {discard_stats}")
-
-    return overall_results
+    return discard_stats
 
 
 def calculate_scores_from_hand(

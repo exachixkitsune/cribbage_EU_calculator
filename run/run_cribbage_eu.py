@@ -17,5 +17,5 @@ if __name__ == "__main__":
 
     print(f"{time()-start_time:.0f}: Analysing " + card.convert_cardlist_to_str(cards))
     results_out = calculate_cribbage_eu(cards, provide_status=False)
-    present_results(results_out, 4)
+    present_results(list(results_out), 4)
     print(f"{time()-start_time:.0f}: finished in {time() - start_time}")
