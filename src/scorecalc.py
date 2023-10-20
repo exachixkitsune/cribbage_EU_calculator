@@ -4,7 +4,7 @@ Created on Fri Mar 17 16:20:35 2023
 """
 
 from __future__ import annotations
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
 from copy import copy, deepcopy
 from itertools import combinations
 
@@ -106,20 +106,20 @@ def calculate_score_2_runs(full_set_vals: List[CardVal]) -> int:
     valid_runs_2 = []
     combination_indicies_2 = list(combinations(range(5), 3))
     for i_combination_set_2 in combination_indicies_2:
-        if any([is_a_subset_b(i_combination_set_2, j) for j in valid_runs]):
+        if any(is_a_subset_b(i_combination_set_2, j) for j in valid_runs):
             continue
-        if is_a_run([full_set_vals[i] for i in i_combination_set_2]):
+        if is_a_run(full_set_vals[i] for i in i_combination_set_2):
             valid_runs_2.append(copy(i_combination_set_2))
 
     # Score
-    return sum([len(i) for i in valid_runs]) + sum([len(i) for i in valid_runs_2])
+    return sum(len(i) for i in valid_runs) + sum(len(i) for i in valid_runs_2)
 
 
-def is_a_run(test: List[int]) -> bool:
+def is_a_run(test: Iterable[CardVal]) -> bool:
     """
     Is this list of numbers a run
     """
-    this_test = deepcopy(test)
+    this_test = list(test)
     this_test.sort()
 
     # Are all numbers sequential?
@@ -150,7 +150,7 @@ def calculate_score_3_pairs(full_set_vals: List[CardVal]) -> int:
     return sum(list(map(check_pair_and_score, set_pairs)))
 
 
-def check_pair_and_score(set_vals: List[int]) -> int:
+def check_pair_and_score(set_vals: List[CardVal]) -> int:
     """
     Is this a pair? If so, return 2 points
     """

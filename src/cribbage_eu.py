@@ -19,8 +19,7 @@ OP's hand's score is not dependant on your actions.
     Full list of potential values
 """
 
-from typing import List, Dict, Tuple, Any, Callable
-import typing
+from typing import List, Dict, Tuple, Callable
 from itertools import combinations
 from time import time
 from statistics import mean, stdev, median
@@ -93,7 +92,7 @@ def provide_results(
     keyfunc: Callable,
     num_make: int = 3,
     emoji_mode: bool = False,
-):
+) -> None:
     """
     Function taking the card list,
     sorting,
@@ -195,7 +194,10 @@ def calculate_cribbage_EU(
             )
             curr_time = time() - start_time
             print(
-                f"{curr_time:.0f}:On Hand {hand_count}, with hand:{hand_cards}, discard:{discard_cards}"
+                (
+                    f"{curr_time:.0f}:On Hand {hand_count}, "
+                    f"with hand:{hand_cards}, discard:{discard_cards}"
+                )
             )
 
         # Calculate potential scores from hand
@@ -232,11 +234,17 @@ def calculate_cribbage_EU(
         if provide_status:
             curr_time = time() - start_time
             print(
-                f"{curr_time:.0f}:  hand score: {hand_eu['mean']:.2f}±{hand_eu['stdev']:.2f}, median:{hand_eu['median']}, range:{hand_eu['min']}-{hand_eu['max']}"
+                (
+                    f"{curr_time:.0f}:  hand score: {hand_eu['mean']:.2f}±{hand_eu['stdev']:.2f}, "
+                    f"median:{hand_eu['median']}, range:{hand_eu['min']}-{hand_eu['max']}"
+                )
             )
             curr_time = time() - start_time
             print(
-                f"{curr_time:.0f}:  crib score: {crib_eu['mean']:.2f}±{crib_eu['stdev']:.2f}, median:{crib_eu['median']}, range:{crib_eu['min']}-{crib_eu['max']}"
+                (
+                    f"{curr_time:.0f}:  crib score: {crib_eu['mean']:.2f}±{crib_eu['stdev']:.2f}, "
+                    f"median:{crib_eu['median']}, range:{crib_eu['min']}-{crib_eu['max']}"
+                )
             )
 
     return overall_results
@@ -270,7 +278,7 @@ def calculate_scores_from_hand(
 
 def calculate_scores_from_crib(
     hand_cards: List[Card], discarded_cards: List[Card]
-) -> Tuple[List[int], ...]:
+) -> Tuple[List[int], list[list[object]]]:
     """
     Calculate the scores for the crib
 

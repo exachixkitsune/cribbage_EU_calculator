@@ -4,7 +4,7 @@ Created on Fri Mar 17 14:26:56 2023
 """
 
 from __future__ import annotations
-from typing import Any, Tuple, List
+from typing import Any, Tuple, List, Iterable
 
 from cardenums import (
     CardVal,
@@ -114,7 +114,7 @@ def convert_cardlist_to_str(
     return list_out
 
 
-def all_possible_cards() -> Card:
+def all_possible_cards() -> Iterable[Card]:
     """
     Generator listing all possible cards
     Cycle the CardVal and CardSuit enums
@@ -126,4 +126,4 @@ def all_possible_cards() -> Card:
             yield i_card
 
 
-total_possible_cards = len([i for i in all_possible_cards()])
+total_possible_cards = len(list(all_possible_cards()))
