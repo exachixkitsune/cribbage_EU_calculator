@@ -16,6 +16,6 @@ if __name__ == "__main__":
     cards = set(map(card.Card.from_str, ["2H", "9H", "XS", "JC", "JD", "KC"]))
 
     print(f"{time()-start_time:.0f}: Analysing " + card.convert_cardlist_to_str(cards))
-    results_out = calculate_cribbage_eu(cards, provide_status=False)
+    results_out = calculate_cribbage_eu(cards)
     present_results(list(results_out), 4)
     print(f"{time()-start_time:.0f}: finished in {time() - start_time}")

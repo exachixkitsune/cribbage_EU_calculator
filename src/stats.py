@@ -28,7 +28,7 @@ class ScoringStats:
         return f"{self.mean:.2f}±{self.stdev:.2f}"
 
 
-class DiscordOption:
+class DiscardOption:
     """Stats for a hand+discard combo."""
 
     hand: set[Card]

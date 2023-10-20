@@ -62,8 +62,7 @@ def calculate_score_1_15s(full_set_vals: list[CardVal]) -> int:
     # Evaluate each combination
     return sum(
         2 * (sum(potential_set) == 15)
-        for potential_set
-        in itertools.chain(
+        for potential_set in itertools.chain(
             combinations(full_set_points, 2),
             combinations(full_set_points, 3),
             combinations(full_set_points, 4),
@@ -88,20 +87,24 @@ def calculate_score_2_runs(full_set_vals: list[CardVal]) -> int:
         return 5
 
     # Second, check if any combination of 4 is a run
-    valid_runs = sum(len(cards) for cards in combinations(full_set_vals, 4) if is_a_run(cards))
+    valid_runs = sum(
+        len(cards) for cards in combinations(full_set_vals, 4) if is_a_run(cards)
+    )
 
     if valid_runs:
         return valid_runs
 
-    return sum(len(cards) for cards in combinations(full_set_vals, 3) if is_a_run(cards))
+    return sum(
+        len(cards) for cards in combinations(full_set_vals, 3) if is_a_run(cards)
+    )
 
 
 def is_a_run(test: Iterable[CardVal]) -> bool:
     """
     Is this list of numbers a run
     """
-    test_iter = test.__iter__()
-    lowest = test_iter.__next__() + 1
+    test_iter = iter(test)
+    lowest = next(test_iter) + 1
 
     return all(lowest + idx == value for idx, value in enumerate(test_iter))
 

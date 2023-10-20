@@ -22,14 +22,13 @@ OP's hand's score is not dependant on your actions.
 import concurrent.futures
 from typing import Callable, Iterable
 from itertools import combinations
-from time import time
 
 from card import Card, all_possible_cards, convert_cardlist_to_str
-from stats import DiscordOption, ScoringStats
+from stats import DiscardOption, ScoringStats
 from scorecalc import calculate_score
 
 
-def present_results(results_in: list[DiscordOption], num_make: int = 3) -> None:
+def present_results(results_in: list[DiscardOption], num_make: int = 3) -> None:
     """
     Describe the results
 
@@ -89,8 +88,8 @@ def present_results(results_in: list[DiscordOption], num_make: int = 3) -> None:
 
 
 def provide_results(
-    results_in: list[DiscordOption],
-    keyfunc: Callable[[DiscordOption], float],
+    results_in: list[DiscardOption],
+    keyfunc: Callable[[DiscardOption], float],
     num_make: int = 3,
 ) -> None:
     """
@@ -129,9 +128,8 @@ def provide_results(
 
 def calculate_cribbage_eu(
     initial_hand: set[Card],
-    provide_status: bool = False,
     num_discard: int = 2,
-) -> Iterable[DiscordOption]:
+) -> Iterable[DiscardOption]:
     """
     Calculate the EU for each option of discard to crib.
 
@@ -158,17 +156,17 @@ def calculate_cribbage_eu(
     # Use indicies, as this enables
     discards = [set(discard) for discard in combinations(initial_hand, num_discard)]
 
-    hand_count = 0
-
     # Iterate over each option
-    start_time = time()
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        futures = [executor.submit(calculate_score_for_option, initial_hand - discard, discard) for discard in discards]
+        futures = [
+            executor.submit(calculate_score_for_option, initial_hand - discard, discard)
+            for discard in discards
+        ]
         for result in concurrent.futures.as_completed(futures):
             yield result.result()
 
 
-def calculate_score_for_option(hand: set[Card], discord: set[Card]) -> DiscordOption:
+def calculate_score_for_option(hand: set[Card], discord: set[Card]) -> DiscardOption:
     # What cards remain in hand
     i_discard = discord
     i_hand = hand
@@ -178,7 +176,7 @@ def calculate_score_for_option(hand: set[Card], discord: set[Card]) -> DiscordOp
     crib_scores = calculate_scores_from_crib(i_hand, i_discard)
 
     # Calculate Stats
-    discard_stats = DiscordOption(
+    discard_stats = DiscardOption(
         i_hand, i_discard, ScoringStats(hand_scores), ScoringStats(crib_scores)
     )
 
