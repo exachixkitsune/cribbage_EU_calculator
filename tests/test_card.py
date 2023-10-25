@@ -3,13 +3,13 @@
 Created on Fri Mar 17 17:41:40 2023
 """
 
-from card import (
+from cribbage.card import (
     Card,
+    all_possible_cards,
     convert_card_array_to_enum_array,
     convert_cardlist_to_str,
-    all_possible_cards,
 )
-from cardenums import CardVal, CardSuit
+from cribbage.cardenums import CardSuit, CardVal
 
 # pragma pylint: disable=R0903
 #  Disable "too few public methods" for test cases - most test files will be classes used for
@@ -150,7 +150,12 @@ class TestCardToArray:
         """
         Normal array of 4
         """
-        test_card_array = {Card.from_str("4D"), Card.from_str("6D"), Card.from_str("8S"), Card.from_str("XH")}
+        test_card_array = {
+            Card.from_str("4D"),
+            Card.from_str("6D"),
+            Card.from_str("8S"),
+            Card.from_str("XH"),
+        }
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
@@ -172,7 +177,13 @@ class TestCardToArray:
         """
         Normal array of 5
         """
-        test_card_array = {Card.from_str("2C"), Card.from_str("5D"), Card.from_str("5S"), Card.from_str("JH"), Card.from_str("KS")}
+        test_card_array = {
+            Card.from_str("2C"),
+            Card.from_str("5D"),
+            Card.from_str("5S"),
+            Card.from_str("JH"),
+            Card.from_str("KS"),
+        }
         test_card_vals, test_card_suits = convert_card_array_to_enum_array(
             test_card_array
         )
@@ -216,16 +227,29 @@ class TestCardListToString:
         """
         basic test - many items
         """
-        assert convert_cardlist_to_str(
-            {Card.from_str("2C"), Card.from_str("5S"), Card.from_str("5D"), Card.from_str("JH")}
-        ) == "2C, 5D, 5S, JH"
+        assert (
+            convert_cardlist_to_str(
+                {
+                    Card.from_str("2C"),
+                    Card.from_str("5S"),
+                    Card.from_str("5D"),
+                    Card.from_str("JH"),
+                }
+            )
+            == "2C, 5D, 5S, JH"
+        )
 
     @staticmethod
     def test_cardlist_to_str_test5_symbols() -> None:
         """
         basic test - many items
         """
-        cards = {Card.from_str("2C"), Card.from_str("5S"), Card.from_str("JH"), Card.from_str("5D")}
+        cards = {
+            Card.from_str("2C"),
+            Card.from_str("5S"),
+            Card.from_str("JH"),
+            Card.from_str("5D"),
+        }
         print(sorted(cards))
 
         assert convert_cardlist_to_str(cards, True) == "2♣, 5♦, 5♠, J♥"
@@ -239,6 +263,10 @@ class TestAllPossibleCards:
 
     @staticmethod
     def test_all_possible_cards_generator() -> None:
+        """
+        Testing for the all_possible_cards function
+        Test it makes each card sequentially.
+        """
         eachcard = [
             "AC",
             "AS",

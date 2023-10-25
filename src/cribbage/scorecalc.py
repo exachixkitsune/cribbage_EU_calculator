@@ -5,12 +5,13 @@ Created on Fri Mar 17 16:20:35 2023
 
 from __future__ import annotations
 
-import itertools
 from collections.abc import Iterable
+
+import itertools
 from itertools import combinations
 
-from card import Card, convert_card_array_to_enum_array
-from cardenums import CardVal
+from .card import Card, convert_card_array_to_enum_array
+from .cardenums import CardVal
 
 
 def calculate_score(hand: set[Card], starter: Card) -> int:
@@ -31,7 +32,8 @@ def calculate_score(hand: set[Card], starter: Card) -> int:
     """
 
     # ASSERT:
-    assert len(hand) == 4
+    if len(hand) != 4:
+        raise ValueError("Hand must be 4 cards")
 
     # Generate set of all cards
     # Copy here to avoid ruining hand

@@ -2,8 +2,7 @@
 
 import statistics
 
-
-from card import Card
+from .card import Card
 
 
 class ScoringStats:
@@ -27,6 +26,9 @@ class ScoringStats:
     def __str__(self) -> str:
         return f"{self.mean:.2f}±{self.stdev:.2f}"
 
+    def __hash__(self) -> int:
+        return hash(self.possible_scores)
+
 
 class DiscardOption:
     """Stats for a hand+discard combo."""
@@ -49,3 +51,9 @@ class DiscardOption:
 
         self.hand_scores = hand_scores
         self.crib_scores = crib_scores
+
+    def __str__(self) -> str:
+        return f"keep {self.hand}, discard {self.discard}"
+
+    def __hash__(self) -> int:
+        return hash((self.hand, self.discard))
