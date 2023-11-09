@@ -8,12 +8,9 @@ How run?
 - Install dependancies
 
 ```shell
-pip install -U -r requirements.txt
+pip install . 
+cribbage [cards]
 ```
-
-- Set up card information
-
-Modify the `run/run_cribbage_eu.py` file with your hand on line 17.
 
 Each 'Card' is 2 characters, a Number and a Suit.
 
@@ -50,8 +47,9 @@ Proceed to look at src.
 
 There are lint and test commands with:
 ```shell
-python -m tools.lint
-python -m tools.test
+pip install -r requirements-dev.txt
+mewbot-lint
+mewbot-test
 ```
 
 No guarantee that the existing code passess the lints though.

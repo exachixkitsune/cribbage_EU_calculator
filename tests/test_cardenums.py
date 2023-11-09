@@ -4,11 +4,7 @@ Test of the cardenums file, and associated functions.
 
 import pytest
 
-from cardenums import (
-    CardVal,
-    CardSuit,
-    cardsuit_to_symbol,
-)
+from cribbage.cardenums import CardSuit, CardVal, cardsuit_to_symbol
 
 # pragma pylint: disable=R0903
 #  Disable "too few public methods" for test cases - most test files will be classes used for

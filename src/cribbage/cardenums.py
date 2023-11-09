@@ -23,7 +23,7 @@ class CardVal(IntEnum):
         This exists because numbers cannot be the enum name.
         I.e. CardVal.2 couldn't exist
         """
-        test_name = f"VAL_{in_name}"
+        test_name = f"VAL_{in_name.upper()}"
         return cls[test_name]
 
     VAL_A = 1
@@ -61,6 +61,8 @@ class CardSuit(str, Enum):
             2. using the emoji (♣, ♠, ♦, ♥)
             3. using the normal method from the CardSuit Enum
         """
+
+        in_name = in_name.upper()
 
         # First character Matches:
         for i_suit in list(CardSuit):

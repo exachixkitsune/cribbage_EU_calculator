@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cribbage-eu"
+version = "0.0.1"
+
+authors = [
+    {name = "Kitsune"},
+]
+
+description = "This is code to automatically calculate the expected utility of a hand for cribbage as played on Board Game Arena (BGA)."
+readme = "README.md"
+license = {text = "MIT"}
+
+requires-python = ">=3.10"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+dynamic = ["dependencies"]
+
+[project.scripts]
+cribbage = "cribbage.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.isort]
+profile = "black"
+py_version = 310
+sections = ['FUTURE', 'TYPING', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
+known_typing = ["typing", "types", "collections.abc"]
+multi_line_output = 3
+
+[tool.pydocstyle]
+convention="pep257"
+add-ignore=["D105", "D107", "D200", "D202", "D205", "D400", "D401", "D403"]
+ignore-self-only-init=true
+
+[tool.bandit]
+exclude_dirs=["tests"]

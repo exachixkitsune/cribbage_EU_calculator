@@ -19,13 +19,14 @@ OP's hand's score is not dependant on your actions.
     Full list of potential values
 """
 
-import concurrent.futures
 from typing import Callable, Iterable
+
+import concurrent.futures
 from itertools import combinations
 
-from card import Card, all_possible_cards, convert_cardlist_to_str
-from stats import DiscardOption, ScoringStats
-from scorecalc import calculate_score
+from .card import Card, all_possible_cards, convert_cardlist_to_str
+from .scorecalc import calculate_score
+from .stats import DiscardOption, ScoringStats
 
 
 def present_results(results_in: list[DiscardOption], num_make: int = 3) -> None:
@@ -167,6 +168,8 @@ def calculate_cribbage_eu(
 
 
 def calculate_score_for_option(hand: set[Card], discard: set[Card]) -> DiscardOption:
+    """Get the hand and crib scores for a given hand/discard"""
+
     # What cards remain in hand
     i_discard = discard
     i_hand = hand

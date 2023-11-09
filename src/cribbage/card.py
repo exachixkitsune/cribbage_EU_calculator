@@ -7,11 +7,7 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
-from cardenums import (
-    CardVal,
-    CardSuit,
-    cardsuit_to_symbol,
-)
+from .cardenums import CardSuit, CardVal, cardsuit_to_symbol
 
 
 class Card:

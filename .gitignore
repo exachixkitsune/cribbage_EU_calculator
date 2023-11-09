@@ -5,6 +5,8 @@
 /.cache/
 __pycache__/
 .mypy_cache/
+.ruff_cache/
+/build
 
 # Coverage and Test artefacts
 .coverage

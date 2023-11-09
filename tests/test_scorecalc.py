@@ -3,7 +3,9 @@
 Created on Fri Mar 17 20:51:47 2023
 """
 
-from scorecalc import (
+from cribbage.card import Card
+from cribbage.cardenums import CardVal
+from cribbage.scorecalc import (
     calculate_score,
     calculate_score_1_15s,
     calculate_score_2_runs,
@@ -11,8 +13,6 @@ from scorecalc import (
     calculate_score_4_flush,
     calculate_score_5_nobs,
 )
-from card import Card
-from cardenums import CardVal
 
 # pragma pylint: disable=R0903
 #  Disable "too few public methods" for test cases - most test files will be classes used for
@@ -31,7 +31,13 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("KS"), Card.from_str("7D")], Card.from_str("9C")
+                {
+                    Card.from_str("JH"),
+                    Card.from_str("3C"),
+                    Card.from_str("KS"),
+                    Card.from_str("7D"),
+                },
+                Card.from_str("9C"),
             )
             == 0
         )
@@ -44,7 +50,13 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card.from_str("JS"), Card.from_str("5H"), Card.from_str("XC"), Card.from_str("5S")], Card.from_str("4S")
+                {
+                    Card.from_str("JS"),
+                    Card.from_str("5H"),
+                    Card.from_str("XC"),
+                    Card.from_str("5S"),
+                },
+                Card.from_str("4S"),
             )
             == 11
         )
@@ -57,7 +69,13 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card.from_str("5D"), Card.from_str("6S"), Card.from_str("5C"), Card.from_str("7C")], Card.from_str("4S")
+                {
+                    Card.from_str("5D"),
+                    Card.from_str("6S"),
+                    Card.from_str("5C"),
+                    Card.from_str("7C"),
+                },
+                Card.from_str("4S"),
             )
             == 14
         )
@@ -70,7 +88,13 @@ class TestScoreOverall:
         """
         assert (
             calculate_score(
-                [Card.from_str("AH"), Card.from_str("KS"), Card.from_str("2S"), Card.from_str("6H")], Card.from_str("4S")
+                {
+                    Card.from_str("AH"),
+                    Card.from_str("KS"),
+                    Card.from_str("2S"),
+                    Card.from_str("6H"),
+                },
+                Card.from_str("4S"),
             )
             == 2
         )
@@ -595,7 +619,13 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card.from_str("AH"), Card.from_str("3C"), Card.from_str("5S"), Card.from_str("7D")], Card.from_str("9C")
+                {
+                    Card.from_str("AH"),
+                    Card.from_str("3C"),
+                    Card.from_str("5S"),
+                    Card.from_str("7D"),
+                },
+                Card.from_str("9C"),
             )
             == 0
         )
@@ -607,7 +637,13 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card.from_str("5H"), Card.from_str("8D"), Card.from_str("9D"), Card.from_str("XD")], Card.from_str("2H")
+                {
+                    Card.from_str("5H"),
+                    Card.from_str("8D"),
+                    Card.from_str("9D"),
+                    Card.from_str("XD"),
+                },
+                Card.from_str("2H"),
             )
             == 0
         )
@@ -619,7 +655,13 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card.from_str("AH"), Card.from_str("3H"), Card.from_str("5H"), Card.from_str("7H")], Card.from_str("9C")
+                {
+                    Card.from_str("AH"),
+                    Card.from_str("3H"),
+                    Card.from_str("5H"),
+                    Card.from_str("7H"),
+                },
+                Card.from_str("9C"),
             )
             == 4
         )
@@ -631,7 +673,13 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card.from_str("AH"), Card.from_str("3H"), Card.from_str("5H"), Card.from_str("7H")], Card.from_str("9H")
+                {
+                    Card.from_str("AH"),
+                    Card.from_str("3H"),
+                    Card.from_str("5H"),
+                    Card.from_str("7H"),
+                },
+                Card.from_str("9H"),
             )
             == 5
         )
@@ -643,7 +691,13 @@ class TestScore4:
         """
         assert (
             calculate_score_4_flush(
-                [Card.from_str("5D"), Card.from_str("8D"), Card.from_str("9D"), Card.from_str("XD")], Card.from_str("2H")
+                {
+                    Card.from_str("5D"),
+                    Card.from_str("8D"),
+                    Card.from_str("9D"),
+                    Card.from_str("XD"),
+                },
+                Card.from_str("2H"),
             )
             == 4
         )
@@ -661,7 +715,13 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card.from_str("AH"), Card.from_str("3C"), Card.from_str("5S"), Card.from_str("7D")], Card.from_str("9C")
+                {
+                    Card.from_str("AH"),
+                    Card.from_str("3C"),
+                    Card.from_str("5S"),
+                    Card.from_str("7D"),
+                },
+                Card.from_str("9C"),
             )
             == 0
         )
@@ -673,7 +733,13 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("7D")], Card.from_str("9C")
+                {
+                    Card.from_str("JH"),
+                    Card.from_str("3C"),
+                    Card.from_str("JS"),
+                    Card.from_str("7D"),
+                },
+                Card.from_str("9C"),
             )
             == 0
         )
@@ -685,7 +751,13 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card.from_str("JH"), Card.from_str("5C"), Card.from_str("JC"), Card.from_str("JD")], Card.from_str("3S")
+                {
+                    Card.from_str("JH"),
+                    Card.from_str("5C"),
+                    Card.from_str("JC"),
+                    Card.from_str("JD"),
+                },
+                Card.from_str("3S"),
             )
             == 0
         )
@@ -697,7 +769,13 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("JD")], Card.from_str("3D")
+                {
+                    Card.from_str("JH"),
+                    Card.from_str("3C"),
+                    Card.from_str("JS"),
+                    Card.from_str("JD"),
+                },
+                Card.from_str("3D"),
             )
             == 1
         )
@@ -709,7 +787,13 @@ class TestScore5:
         """
         assert (
             calculate_score_5_nobs(
-                [Card.from_str("JH"), Card.from_str("3C"), Card.from_str("JS"), Card.from_str("JD")], Card.from_str("3H")
+                {
+                    Card.from_str("JH"),
+                    Card.from_str("3C"),
+                    Card.from_str("JS"),
+                    Card.from_str("JD"),
+                },
+                Card.from_str("3H"),
             )
             == 1
         )
